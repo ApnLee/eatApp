@@ -1,0 +1,175 @@
+package com.eatApp.entity;
+
+
+
+import java.util.Date;
+import java.util.List;
+
+public class Order {
+	/**
+	 * 订单id
+	 */
+	private int id;
+	/**
+	 * 下单日期
+	 */
+	private Date orderdate;
+	/**
+	 * userId
+	 */
+	private int userId;
+	/**
+	 * 
+	 * 订单详情
+	 */
+
+	private List<OrderDeatil> orderDeatils;
+
+	/**
+	 * 订单总价格
+	 */
+
+	private Double totalprice;
+	/**
+	 * 订单状态 ：1 交易成功 2 交易失败 3 待发货 4 卖家已发货 5 待付款 6 待评价
+	 */
+	private int orderStatus;
+	
+	private String statusName;
+
+	
+	/**
+	 * 物流公司代码
+	 */
+	private String waycode;
+	/**
+	 * 物流运单号
+	 */
+	private String waynum;
+	/**
+	 * 评价状态 0未评价 1已评价
+	 */
+	private int evaluatestatus;
+	
+	/**
+	 * 用户
+	 * @return
+	 */
+	private String realname;
+	
+	/**
+	 * 物流公司
+	 * @return
+	 */
+	private String logisticsCompany;
+	
+	/**
+	 * 收货地址
+	 * @return
+	 */
+    private String address;
+	
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public String getLogisticsCompany() {
+		return logisticsCompany;
+	}
+
+	public void setLogisticsCompany(String logisticsCompany) {
+		this.logisticsCompany = logisticsCompany;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getOrderdate() {
+		return orderdate;
+	}
+
+	public void setOrderdate(Date orderdate) {
+		this.orderdate = orderdate;
+	}
+
+	public Double getTotalprice() {
+		return totalprice;
+	}
+
+	public void setTotalprice(Double totalprice) {
+		this.totalprice = totalprice;
+	}
+
+	public int getEvaluatestatus() {
+		return evaluatestatus;
+	}
+
+	public void setEvaluatestatus(int evaluatestatus) {
+		this.evaluatestatus = evaluatestatus;
+	}
+
+	public int getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(int orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public List<OrderDeatil> getOrderDeatils() {
+		return orderDeatils;
+	}
+
+	public void setOrderDeatils(List<OrderDeatil> orderDeatils) {
+		this.orderDeatils = orderDeatils;
+	}
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public String getWaycode() {
+		return waycode;
+	}
+
+	public void setWaycode(String waycode) {
+		this.waycode = waycode;
+	}
+
+	public String getWaynum() {
+		return waynum;
+	}
+
+	public void setWaynum(String waynum) {
+		this.waynum = waynum;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+}

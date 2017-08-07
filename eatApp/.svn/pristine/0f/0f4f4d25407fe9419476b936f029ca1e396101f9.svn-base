@@ -1,0 +1,206 @@
+package com.eatApp.servlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.eatApp.entity.User;
+import com.eatApp.service.UserService;
+import com.eatApp.service.impl.UserServieceImpl;
+import com.eatApp.utils.RestTest;
+
+
+
+
+
+
+public class UserServlet extends HttpServlet {
+UserService userService=new UserServieceImpl();
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getParameter("method").equals("mobileCode")) {
+			mobileCode(request,response);
+		}	else if (request.getParameter("method").equals("register")) {
+		 register(request,response);
+		}else if(request.getParameter("method").equals("checkPhone")){
+			checkPhone(request,response);
+		}
+		else if(request.getParameter("method").equals("checkEmail")){
+			checkEmail(request,response);
+		}
+		else if(request.getParameter("method").equals("emailCode")){
+			emailCode(request,response);
+		}else if(request.getParameter("method").equals("logout")){
+			logout(request,response);
+		}    
+	
+	}
+
+	private void logout(HttpServletRequest request, HttpServletResponse response) {
+	     request.getSession().removeAttribute("UserName");
+	     request.getSession().removeAttribute("UserId");
+	     request.getSession().removeAttribute("NickName");
+	     try {
+			request.getRequestDispatcher("/app/welcome.jsp").forward(request, response);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void emailCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		 String email=request.getParameter("email");
+	     int radomInt = new Random().nextInt(999999); 
+	     System.out.println(radomInt);
+
+			Properties prop = new Properties();
+	        prop.setProperty("mail.transport.protocol", "smtp"); 
+	        prop.setProperty("mail.smtp.host", "smtp.qq.com"); 
+	        prop.setProperty("mail.smtp.port", "587"); 
+	        prop.setProperty("mail.smtp.auth", "true"); 
+	        prop.setProperty("mail.debug", "true");
+	        
+	        
+	        Session session = Session.getDefaultInstance(prop,new MyAuthenticator("563116570@qq.com", "ykkouimbfvjnbbcd")); //��Ȩ��
+	       
+	        Message msg = new MimeMessage(session);
+	     
+	        try {
+				msg.setFrom(new InternetAddress("563116570@qq.com"));
+				
+		        msg.setRecipient(RecipientType.TO, new InternetAddress(email));
+	
+		        msg.setSubject("来自悦桔拉拉的邮件");
+		      
+		        msg.setText("您好，欢迎注册悦桔拉拉购物网站！您的验证码为"+radomInt);
+		       
+		        Transport trans = session.getTransport();
+		        trans.connect();
+		      
+		        trans.sendMessage(msg, msg.getAllRecipients());	
+		       
+		        
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+	        PrintWriter pw=response.getWriter();
+	        pw.write(radomInt+""); 
+	        
+	        
+	}
+
+
+	
+	private void checkEmail(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		 String email=request.getParameter("email");
+		 List<User> list=userService.findAll();
+			System.out.println(email);
+			PrintWriter pw = response.getWriter();
+			if(email!=null){
+			//���鵽��ͬ������� ˵����������Ѿ���ע�ᣡ
+			for (User user : list) {
+				if(user.getEmail()!=null&&!"".equals(user.getEmail())){
+				if(user.getEmail().equals(email)){
+	        		pw.write("1");
+					break;
+				}
+				}
+			}
+			}
+			 pw.flush();
+			 pw.close();
+			}
+			
+		
+
+	private void checkPhone(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		List<User> list=userService.findAll();
+		String phone=request.getParameter("phone");
+		System.out.println(phone);
+		PrintWriter pw = response.getWriter();
+		if(phone!=null){
+		//���鵽��ͬ���ֻ�� ˵������ֻ��Ѿ���ע�ᣡ
+		for (User user : list) {
+			if(user.getPhone()!=null&&!"".equals(user.getPhone())){
+			if(user.getPhone().equals(phone)){
+        		pw.write("1");
+				break;
+			}
+			}
+		}
+		}
+		 pw.flush();
+		   pw.close();
+	}
+
+	private void register(HttpServletRequest request, HttpServletResponse response) {
+		String phone=request.getParameter("phone2");
+		System.out.println(phone);
+		String email=request.getParameter("email");
+		String password=request.getParameter("password");
+		System.out.println(password);
+		userService.register(phone, email, password);
+		try {
+			request.getRequestDispatcher("/app/login.jsp").forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+	
+	private void mobileCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		PrintWriter pw = response.getWriter();
+		
+        String accountSid="ef32dde9c4051406132b63fd136b4a7e";
+        String authToken="ad7c5ef5055aac24187444cd12e01398";
+        String appId="9b182847839749ef8da6fc0070e92e9f";
+        String templateId="28502";
+        String to=request.getParameter("phone");
+        int radomInt = new Random().nextInt(999999);  
+        String param=String.valueOf(radomInt);
+        System.out.println(param);
+        pw.write(param);
+        RestTest.testTemplateSMS(true, accountSid, authToken, appId, templateId, to, param);
+      pw.flush();
+	   pw.close();
+	}
+}
+
+	 class MyAuthenticator extends Authenticator{
+	        private String user;
+	        private String pwd;
+	        public MyAuthenticator(String user, String pwd) {
+	            super();
+	            this.user = user;
+	            this.pwd = pwd;
+	        }
+	        public MyAuthenticator() {}
+
+	        protected PasswordAuthentication getPasswordAuthentication() {
+	            return new PasswordAuthentication(user, pwd);
+	        
+	    }	
+}
